@@ -24,13 +24,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Install Docker Compose
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y curl
-        curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
-        docker-compose --version  # Verify installation
+    - name: Setup Docker
+      uses: docker/setup-buildx-action@v2  # Correct action for installing Docker and Docker Compose
 
     - name: Start Services with Docker Compose
       run: docker-compose up -d
@@ -52,7 +47,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v2  # Setting up Docker Buildx for building images
 
     - name: Login to Docker Hub
       uses: docker/login-action@v2
@@ -61,11 +56,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build and Push Docker Image
-      run: docker-compose build
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        with:
-        push: true
+      run: docker-compose build  # Build the images defined in your docker-compose.yml
 
     - name: Deploy Services with Docker Compose
       run: docker-compose up -d
