@@ -1,0 +1,21 @@
+version: "3.0"
+
+services:
+    web:
+      build: 
+        context: .
+        dockerfile: Dockerfile
+      image: yuta_app
+      ports:
+        - "5000:5000"
+
+      depends_on:
+        - db
+    
+    db:
+
+      image: data_b/sqlite3
+      volumes:
+        - ./data:/data
+
+      command: ["sqlite3", "/data/app.db"]
