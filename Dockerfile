@@ -1,4 +1,4 @@
-FROM python:3.8-slime
+FROM python:3.8-slime 
 
 WORKDIR /app
 
