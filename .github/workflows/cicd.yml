@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check Code
+    - name: Checkout Code
       uses: actions/checkout@v4
 
     - name: Setup Python
@@ -71,8 +71,17 @@ jobs:
     - name: Verify Docker Compose Version
       run: docker-compose --version  # Check the version of Docker Compose
 
-    - name: Build and Push Docker Image
+    - name: Build Docker Image
       run: docker-compose build  # Build the images defined in your docker-compose.yml
+
+    - name: Tag Docker Image
+      run: |
+        docker tag yuta_app:latest harshdalvi976/yuta_app:${{ github.sha }}  # Tag the image with the commit SHA
+
+    - name: Push Docker Image to Docker Hub
+      run: |
+        docker push harshdalvi976/yuta_app:latest  # Push the image to Docker Hub
+        docker push harshdalvi976/yuta_app:${{ github.sha }}  # Push the image with the commit SHA as a tag
 
     - name: Deploy Services with Docker Compose
       run: docker-compose up -d --build  # Rebuild the images and deploy

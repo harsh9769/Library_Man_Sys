@@ -5,7 +5,7 @@ services:
       build: 
         context: .
         dockerfile: Dockerfile
-      image: yuta_app
+      image: harshdalvi976/yuta_app
       ports:
         - "5000:5000"
 
