@@ -14,7 +14,7 @@ services:
     
     db:
 
-      image: data_b/sqlite3
+      image: nouchka/sqlite3
       volumes:
         - ./data:/data
 
