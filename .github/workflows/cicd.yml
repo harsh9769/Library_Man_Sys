@@ -3,7 +3,6 @@ name: Docker-CI
 on:
   push:
     branches: [main]
-
   pull_request:
     branches: [main]
 
@@ -53,5 +52,24 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/yuta_app:latest
 
-    - name: Image Digest
-      run: echo ${{ steps.build-publish.outputs.digest }}  # Output the image digest after build and push
+    - name: Save Image Digest
+      id: image-digest
+      run: echo "digest=${{ steps.build-publish.outputs.digest }}" >> $GITHUB_ENV  # Save image digest to environment variables
+
+  deploy:
+    needs: build-publish
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: Pull and Deploy Docker Image
+      run: |
+        docker-compose pull  # Pull the latest image from Docker Hub
+        docker-compose up -d --build  # Start or restart the services with the latest image

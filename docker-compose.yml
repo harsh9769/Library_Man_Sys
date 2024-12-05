@@ -1,21 +1,25 @@
 version: "3.0"
 
 services:
-    web:
-      build: 
-        context: .
-        dockerfile: Dockerfile
-      image: harshdalvi976/yuta_app
-      ports:
-        - "5000:5000"
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: harshdalvi976/yuta_app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: sqlite:////data/app.db  # Ensure app points to the shared SQLite file
+    volumes:
+      - shared-data:/data  # Share the same data directory with the database service
 
-      depends_on:
-        - db
-    
-    db:
+  db:
+    image: nouchka/sqlite3
+    volumes:
+      - shared-data:/data  # Shared volume for database persistence
+    command: ["sqlite3", "/data/app.db"]
 
-      image: nouchka/sqlite3
-      volumes:
-        - ./data:/data
-
-      command: ["sqlite3", "/data/app.db"]
+volumes:
+  shared-data:

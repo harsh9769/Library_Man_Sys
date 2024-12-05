@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db?timeout=10"
 app.config["SECRET_KEY"] = "harsh"  # Required for session management and flashing messages
 
 db = SQLAlchemy(app)
@@ -192,3 +192,4 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=5000)
+
